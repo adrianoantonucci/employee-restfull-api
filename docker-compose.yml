@@ -1,0 +1,30 @@
+# v2 syntax
+version: '2'
+
+volumes:
+  employee-api-mysql-data:
+    driver: local
+
+services:
+  mysql:
+    image: ambientum/mysql:5.7
+    container_name: employee-api-mysql
+    volumes:
+      - employee-api-mysql-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=employee
+      - MYSQL_USER=app_user
+      - MYSQL_PASSWORD=secret
+
+  app:
+    image: ambientum/php:7.1-caddy
+    container_name: employee-api-app
+    volumes:
+      - .:/var/www/app
+    ports:
+      - "8085:8080"
+    links:
+      - mysql
