@@ -18,7 +18,7 @@ class DeveloperController extends Controller
                                 ->hobby($request->hobby)
                                 ->datanascimento($request->datanascimento)
                                 ->excluido($request->excluido)
-                                ->paginate(10);
+                                ->get();
 
         if(!$developers){
             return response()->json([
@@ -45,7 +45,7 @@ class DeveloperController extends Controller
         $rule = [
             'nome' => 'required|max:80',
             'sexo' => 'required|max:80',
-            'datanascimento' => 'date_format:"d/m/Y"|required',
+            'datanascimento' => 'required',
         ];
 
         $msg = [
@@ -54,7 +54,6 @@ class DeveloperController extends Controller
             'sexo.required' => 'O campo sexo é obrigatório',
             'sexo.max' => 'o Campo sexo tem o limite de :max caracteres',
             'datanascimento.require' => 'O campo datanascimento é obrigatório',
-            'datanascimento.date_format' => 'O campo datanascimento deve ser no formato dd/mm/yyyy',
         ];
 
         $validator = Validator::make($request->all(), $rule, $msg);
@@ -66,7 +65,6 @@ class DeveloperController extends Controller
         }
 
         try {
-            $request['datanascimento'] = Carbon::createFromFormat('d/m/Y', $request['datanascimento'])->format('Y-m-d');
             $developer = Developer::create($request->all());
 
             return response()->json([
@@ -88,9 +86,7 @@ class DeveloperController extends Controller
         try {
             $developer = Developer::findOrFail($id);
 
-            if(isset($request->datanascimento)){
-                $request['datanascimento'] = Carbon::createFromFormat('d/m/Y', $request['datanascimento'])->format('Y-m-d');
-            }
+           
 
             $developer->fill($request->all());
             $developer->save();

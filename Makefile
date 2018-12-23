@@ -7,6 +7,7 @@ install: _env-file
 	docker-compose exec app composer install
 	docker-compose exec app php artisan key:generate
 	docker-compose exec app php artisan migrate:refresh --seed
+	docker-compose exec app npm run production
 
 
 stop:
